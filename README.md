@@ -1,2 +1,2 @@
 # mycodes_dev
-my first repository
+this is my repo
