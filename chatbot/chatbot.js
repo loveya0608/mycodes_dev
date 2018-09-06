@@ -1,10 +1,10 @@
-var botui = new BotUI('reminder-bot');
+var botui = new BotUI('Bot-Alice');
 
 botui.message.bot("Hi, I'm Alice. ")
   .then(function(){
     botui.message.bot({
-      delay:1000,
-      content:"How is it going?"
+      delay:500,
+      content:"How are you doing?"
     })
     .then(function(){
       chat()
@@ -25,8 +25,17 @@ var chat = function (){
     if(res.value == 'LEARN'){
       return learn();
     }
-    // getAnswer(res);
+    // getAnswer
     var ans = getAns(res.value,QA);
+    if(ans =='CURRENTTIME'){
+      ans ='' + new Date(); 
+    }
+    if(ans.search('GIF')!= -1){
+      return embed(ans);
+    }
+    if(ans=='SEARCH'){
+      return search(res.value);
+    }
     botui.message.bot({
       delay:500,
       content:ans
@@ -120,7 +129,7 @@ function getInputStr(str){
 
 function learn(){
   var question = ''
-  var answer = ''
+  var answer = []
   botui.message.bot({
     delay:500,
     content:"The question is?"
@@ -148,11 +157,7 @@ function learn(){
     })
   })
   .then(function(res){
-    answer = res.value
-    // botui.message.bot({
-    //   delay:500,
-    //   content: 'The answer is: ' + answer
-    // })
+    answer.push(res.value);
     var newQA = {Q:question, A:answer}
     QA.push(newQA);
     botui.message.bot({
@@ -166,6 +171,29 @@ function learn(){
     })
       return chat()
     })
+  })
+}
+
+function embed(str){
+  botui.message.bot({
+    delay:500,
+    type:'embed',
+    content:"./img/"+ str
+  })
+  .then(function(){
+    return chat()
+  })
+}
+
+//http://www.goole.com/search?h/=zh-CH&q=
+function search(str){
+  return botui.message.bot({
+    delay:500,
+    content:'Searching...'
+  })
+  .then(function(){
+    window.open('http://www.baidu.com/s?wd='+str,'')
+    return chat()
   })
 }
 
