@@ -476,19 +476,17 @@ function parseChinese(inputSentence){
             if(matchScore==100){
                 break;
             }
-            //如果识别率为零则生成一个随机应答索引
-            //问答知识库头10条记录是为这种情况设定的
+            //如果识别率为零则返回QA知识库第一条
             if(bestMatchScore==0){
-                bestAnswerIndex=Math.floor(Math.random()*10);
+                bestAnswerIndex=0;
             }
             
         }
         
-        //依据所获的索引号提取出问题的最佳答案
-        var answerString=QAdb[bestAnswerIndex].A;
-        if(answerString == 'Current time is '){
-            answerString = answerString + now;
-        }
-
+        //依据bestAnswerIndex提取出答案集 A[]，并随机返回A[i],使回答多样性
+        var answerArray = QAdb[bestAnswerIndex].A;
+        var arrayLength = answerArray.length;
+        var random = Math.floor(Math.random()*arrayLength);
+        var answerString = answerArray[random];
         return answerString;
         }
